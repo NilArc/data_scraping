@@ -45,51 +45,6 @@ The web scraping process will operate as follows:
 8. **Clean Data**: Remove any rows with null values from the DataFrame.
 9. **Save Data**: Export the DataFrame to a CSV file.
 
-### Example Code
-
-```python
-import requests
-import pandas as pd
-from bs4 import BeautifulSoup
-from itertools import chain
-
-# Initialize DataFrame
-columns = ["Title", "Address", "Number", "Reviews", "Rating"]
-df = pd.DataFrame(columns=columns)
-
-# Function to extract data
-def extract_data(category, location, page):
-    url = f"https://www.yellowpages.com/search?search_terms={category}&geo_location_terms={location}&page={page}"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # Extract data
-    for result in soup.find_all('div', class_='result'):
-        try:
-            title = result.find('a', class_='business-name').text
-            address = result.find('div', class_='street-address').text
-            number = result.find('div', class_='phones').text
-            reviews = result.find('span', class_='count').text
-            rating = result.find('div', class_='ratings').find('span')['class'][1].split('-')[-1]
-            df.loc[len(df)] = [title, address, number, reviews, rating]
-        except Exception as e:
-            continue
-
-# Scrape data
-categories = ["Real Estate Brokers", "Commercial Properties", "Residential Properties"]
-locations = ["Luzon", "Visayas", "Mindanao"]
-pages = range(1, 9)
-
-for category, location, page in chain(categories, locations, pages):
-    extract_data(category, location, page)
-
-# Clean DataFrame
-df.dropna(inplace=True)
-
-# Save to CSV
-df.to_csv("yellow_pages_data.csv", index=False)
-```
-
 ## Evaluation
 
 Web scraping is an effective way to gather large amounts of data from websites automatically. Python, with its extensive library support, is well-suited for this task. By using libraries like `requests`, `BeautifulSoup`, and `pandas`, we can efficiently extract and manipulate data from the Yellow Pages website.
@@ -103,3 +58,7 @@ Data preparation is crucial in machine learning projects. Web scraping allows us
 Using Python libraries such as `BeautifulSoup`, `requests`, `pandas`, and `itertools`, we successfully scraped data from Yellow Pages, including "title", "address", "number", "reviews", and "rating" for specific categories and locations. `BeautifulSoup` enabled us to parse HTML and extract data, while `requests` facilitated sending HTTP requests. `pandas` helped in data manipulation and cleaning, ensuring the final dataset was structured and ready for use.
 
 By following this method, we can automate the extraction of valuable business information from Yellow Pages and save it in a structured format like CSV, making it accessible for further analysis or lead generation.
+
+## Additional Notes
+
+Data scrape in this project was use for educational purpose only.
